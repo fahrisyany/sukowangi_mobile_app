@@ -1,28 +1,15 @@
 import React from 'react';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text, Input, Card, Button } from '@ui-kitten/components';
+import { ApplicationProvider, Layout, Text, Input, Divider, Button } from '@ui-kitten/components';
 import { StyleSheet, View } from 'react-native';
+import { CardCustom } from './components/CardCustom'
+import * as Device from 'expo-device';
 
 const useInputState = (initialValue = '') => {
   const [value, setValue] = React.useState(initialValue);
   return { value, onChangeText: setValue };
 };
 
-const Header = (props: any) => (
-  <View {...props}>
-    <Text category='h1'>N-32</Text>
-  </View>
-);
-
-export const CardAccessoriesShowcase = () => (
-  <React.Fragment>
-    <Layout style={styles.topContainer} level='1'>
-      <Card style={styles.card} header={Header}>
-        <Text category='h5'>60/40 C</Text>
-      </Card>
-    </Layout>
-  </React.Fragment>
-);
 
 const HomeScreen = () => {
 
@@ -32,30 +19,30 @@ const HomeScreen = () => {
   return (
     <Layout style={styles.container}>
       <Text category='h2' style={styles.title} >SUKOWANGI</Text>
+      <Divider />
       <View style={styles.rowContainer}>
-        <Text style={styles.label} category='label'>Kode Petani :</Text>
+        <Text style={styles.label} category='label'>Kode Petani {'   '}:</Text>
         <Input
           style={styles.input}
           {...successInputState}
         />
       </View>
-      <Layout style={styles.rowContainer}>
+      <View style={styles.rowContainer}>
         <Text style={styles.label} category='label'>No Keranjang :</Text>
         <Input
           style={styles.input}
+          keyboardType={Device.osName === "Android" ? "numeric" : "number-pad"}
           {...infoInputState}
         />
-      </Layout>
-      {CardAccessoriesShowcase()}
+      </View>
+      {CardCustom()}
       <View style={styles.buttonContainer}>
         <Button appearance='ghost' status='control'>
           Cari
         </Button>
       </View>
     </Layout>
-
   )
-
 };
 
 export default () => (
@@ -65,23 +52,6 @@ export default () => (
 );
 
 const styles = StyleSheet.create({
-  title: {
-    marginBottom: 32,
-  },
-  label: {
-    marginRight: 16,
-  },
-  input: {
-    flex: 1
-  },
-  rowContainer: {
-    marginBottom: 8,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: "row",
-    // borderWidth: 1,
-    // borderColor: "thistle",
-  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -89,23 +59,34 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 64,
     flexDirection: "column",
+    backgroundColor: '#f7f8fc'
     // borderWidth: 1,
     // borderColor: "red",
   },
-  topContainer: {
-    marginTop: 26,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  title: {
+    marginBottom: 32,
   },
-  card: {
-    flex: 1,
+  label: {
+    marginRight: 16,
+  },
+  input: {
+    width: 260
+  },
+  rowContainer: {
+    marginBottom: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: "row",
+    width: '100%',
+    // borderWidth: 1,
+    // borderColor: "thistle",
   },
   buttonContainer: {
     marginTop: 16,
     padding: 6,
     width: '100%',
-    borderRadius: 4,
+    borderRadius: 8,
     justifyContent: 'center',
-    backgroundColor: '#3366FF',
+    backgroundColor: '#2897fc',
   },
 });
