@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 16,
-        borderWidth: 2,
         width: "100%",
         borderRadius: 4,
     },
