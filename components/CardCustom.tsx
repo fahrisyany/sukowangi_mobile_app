@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Card } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
 import { View, Text, Layout } from './Themed';
 import { PetaniInterface } from '../interfaces/petani.interface'
-import { useThemeColor } from './Themed';
 
 type CardCustomProps = {
     result: PetaniInterface;

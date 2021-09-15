@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "sukowangi_mobile_app",
+    "name": "Sukowangi",
     "slug": "sukowangi_mobile_app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/adaptive-icon-2.png",
-    "scheme": "myapp",
+    "scheme": "sukowangi",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/logo.jpeg",
+      "image": "./assets/images/splash-2.png",
       "resizeMode": "contain",
       "backgroundColor": "#044769"
     },
@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon-2.png",
         "backgroundColor": "#044769"
-      }
+      },
+      "package": "com.sukowangi.mobile"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

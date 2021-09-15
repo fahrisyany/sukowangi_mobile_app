@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   input: {
-    width: 245,
+    width: "60%",
     borderWidth: 2,
   },
   inputContainer: {
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   notFoundImg: {
-    width: '100%',
-    height: 400,
+    width: '90%',
+    height: "50%",
   }
 });
