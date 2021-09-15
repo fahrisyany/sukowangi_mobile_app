@@ -3,44 +3,31 @@ import { Card } from '@ui-kitten/components';
 import { StyleSheet } from 'react-native';
 import { View, Text, Layout } from './Themed';
 import { PetaniInterface } from '../interfaces/petani.interface'
-
+import { useThemeColor } from './Themed';
 
 type CardCustomProps = {
     result: PetaniInterface;
-    index: number
 };
 
-export const CardCustom = ({ result, index }: CardCustomProps) => {
-    console.log("🚀 ~ file: CardCustom.tsx ~ line 14 ~ CardCustom ~ result", result)
+export const CardCustom = ({ result }: CardCustomProps) => {
 
     const Header = (props: any) => {
         return (
             <View {...props}>
-                <Text category='h1'>{`${result.SERI}-${result.NO_KERANJANG}`}</Text>
+                <Text category='h1' style={styles.headerContent}>{`${result.SERI}-${result.NO_KERANJANG}`}</Text>
             </View>
         )
     }
 
-    if (result)
-        return (
-            <React.Fragment key={index}>
-                <Layout style={styles.topContainer} level='1'>
-                    <Card style={styles.card} header={Header} >
-                        <Text category='h5'>{result.BRUTO}/{result.NETTO} {result.GRADE_JUAL}</Text>
-                    </Card>
-                </Layout>
-            </React.Fragment>
-        )
-    else {
-        return (
-            <React.Fragment>
-                <Text category='h5'>Petani tidak ada</Text>
-            </React.Fragment>
-        )
+    return (
+        <Layout style={styles.topContainer} level='1'>
+            <Card style={styles.card} header={Header} >
+                <Text category='h1'>{result.BRUTO}/{result.NETTO} {result.GRADE_JUAL}</Text>
+            </Card>
+        </Layout>
+    )
 
-    }
 };
-
 
 const styles = StyleSheet.create({
     topContainer: {
@@ -50,7 +37,9 @@ const styles = StyleSheet.create({
     },
     card: {
         flex: 1,
-        borderColor: "#2897fc",
         borderWidth: 2,
     },
+    headerContent: {
+        fontSize: 62
+    }
 });

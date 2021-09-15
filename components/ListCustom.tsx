@@ -37,8 +37,7 @@ const styles = StyleSheet.create({
         marginTop: 16,
         borderWidth: 2,
         width: "100%",
-        borderRadius: 8,
-        borderColor: "#2897fc",
+        borderRadius: 4,
     },
 });
 
