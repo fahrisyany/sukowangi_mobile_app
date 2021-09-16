@@ -3,12 +3,13 @@ import { View, Text, Layout } from '../components/Themed';
 import { Input, Divider } from '@ui-kitten/components';
 import { StyleSheet, Keyboard, TouchableWithoutFeedback, Image } from 'react-native';
 import { CardCustom } from '../components/CardCustom'
-import SampleJson from '../sample.json'
 import * as Device from 'expo-device';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PetaniInterface } from '../interfaces/petani.interface'
 import ListCustom from '../components/ListCustom'
-
+import * as FileSystem from "expo-file-system";
+import XLSX from 'xlsx'
+import convertToJson from '../helpers/convertToJson'
 
 const useInputState = (initialValue = '') => {
   const [value, setValue] = React.useState(initialValue);
@@ -19,9 +20,39 @@ export default function PetaniScreen() {
   const kodePetaniInputState = useInputState();
   const npKeranjangInputState = useInputState();
   const [data, setData] = useState<PetaniInterface[]>([])
+  const firstInput = useRef<any>(null);
+  const secondInput = useRef<any>(null);
 
   useEffect(() => {
-    setData(SampleJson)
+
+    const getFile = async () => {
+      let result: PetaniInterface[] = [];
+
+      // Gets all files inside of selected directory
+      const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (permissions.granted) {
+
+        // Gets SAF URI from response
+        const uri = permissions.directoryUri;
+
+        // Gets all files inside of selected directory
+        const files = await FileSystem.StorageAccessFramework.readDirectoryAsync(uri);
+        console.log("🚀 ~ file: PetaniScreen.tsx ~ line 40 ~ getFile ~", `Files inside ${uri}:\n\n${JSON.stringify(files)}`)
+        try {
+          const file = await FileSystem.readAsStringAsync(files[0], { encoding: FileSystem.EncodingType.Base64 })
+          const wb = await XLSX.read(file.replace(/_/g, "/").replace(/-/g, "+"), { type: 'base64' })
+          const wsname = wb.SheetNames[0];
+          const ws = wb.Sheets[wsname];
+          const data = XLSX.utils.sheet_to_csv(ws);
+          result = convertToJson(data)
+        } catch (e) {
+          console.log("🚀 ~ file: PetaniScreen.tsx ~ line 48 ~ getFile ~ e", e)
+          alert("Error fetching database. Either the database is missing or format is not .xlsx")
+        }
+      }
+      setData(result)
+    }
+    getFile()
     return () => { }
   }, [])
 
@@ -59,6 +90,10 @@ export default function PetaniScreen() {
           <Input
             style={styles.input}
             autoCapitalize={"characters"}
+            ref={firstInput}
+            onSubmitEditing={() => {
+              secondInput.current.focus()
+            }}
             {...kodePetaniInputState}
           />
         </View>
@@ -67,14 +102,12 @@ export default function PetaniScreen() {
           <Input
             style={styles.input}
             keyboardType={Device.osName === "Android" ? "numeric" : "number-pad"}
+            ref={secondInput}
+            selectTextOnFocus={true}
+            blurOnSubmit={false}
             {...npKeranjangInputState}
           />
         </View>
-        {/* <View style={styles.buttonContainer}>
-        <Button appearance='ghost' status='control' onPress={handleSearchQuery}>
-          <Text style={styles.label}>Cari</Text>
-        </Button>
-      </View> */}
         {renderQueryResult()}
       </Layout>
     </TouchableWithoutFeedback>
@@ -103,14 +136,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: "row",
     width: '100%',
-  },
-  buttonContainer: {
-    marginTop: 8,
-    padding: 6,
-    width: '100%',
-    borderRadius: 8,
-    justifyContent: 'center',
-    backgroundColor: '#2897fc',
   },
   imageContainer: {
     flex: 1,
