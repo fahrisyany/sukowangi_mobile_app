@@ -37,7 +37,7 @@ export default function PetaniScreen() {
 
         // Gets all files inside of selected directory
         const files = await FileSystem.StorageAccessFramework.readDirectoryAsync(uri);
-        console.log("🚀 ~ file: PetaniScreen.tsx ~ line 40 ~ getFile ~", `Files inside ${uri}:\n\n${JSON.stringify(files)}`)
+
         try {
           const file = await FileSystem.readAsStringAsync(files[0], { encoding: FileSystem.EncodingType.Base64 })
           const wb = await XLSX.read(file.replace(/_/g, "/").replace(/-/g, "+"), { type: 'base64' })
@@ -146,5 +146,6 @@ const styles = StyleSheet.create({
   notFoundImg: {
     width: '90%',
     height: "50%",
+    // resizeMode: 'stretch',
   }
 });
