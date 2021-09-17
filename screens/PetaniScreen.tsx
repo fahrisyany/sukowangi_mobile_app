@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, Layout } from '../components/Themed';
-import { Input, Divider } from '@ui-kitten/components';
+import { Input, Divider, Button } from '@ui-kitten/components';
 import { StyleSheet, Keyboard, TouchableWithoutFeedback, Image } from 'react-native';
 import { CardCustom } from '../components/CardCustom'
 import * as Device from 'expo-device';
@@ -10,57 +10,68 @@ import ListCustom from '../components/ListCustom'
 import * as FileSystem from "expo-file-system";
 import XLSX from 'xlsx'
 import convertToJson from '../helpers/convertToJson'
+import useAsyncStorage from "../hooks/useAsyncStorage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const useInputState = (initialValue = '') => {
-  const [value, setValue] = React.useState(initialValue);
+const useInputState = (initialValue: string = '') => {
+  const [value, setValue] = useState<string>(initialValue);
   return { value, onChangeText: setValue };
 };
 
 export default function PetaniScreen() {
   const kodePetaniInputState = useInputState();
   const npKeranjangInputState = useInputState();
-  const [data, setData] = useState<PetaniInterface[]>([])
-  const firstInput = useRef<any>(null);
-  const secondInput = useRef<any>(null);
+  const [data, setData] = useAsyncStorage<PetaniInterface[]>('data', [])
+  const firstInput = useRef<Input | null>(null);
+  const secondInput = useRef<Input | null>(null);
 
   useEffect(() => {
-
-    const getFile = async () => {
-      let result: PetaniInterface[] = [];
-
-      // Gets all files inside of selected directory
-      const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
-      if (permissions.granted) {
-
-        // Gets SAF URI from response
-        const uri = permissions.directoryUri;
-
+    (async () => {
+      const item: string | null = await AsyncStorage.getItem('data');
+      if (item === '[]') {
         // Gets all files inside of selected directory
-        const files = await FileSystem.StorageAccessFramework.readDirectoryAsync(uri);
+        const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
-        try {
-          const file = await FileSystem.readAsStringAsync(files[0], { encoding: FileSystem.EncodingType.Base64 })
-          const wb = await XLSX.read(file.replace(/_/g, "/").replace(/-/g, "+"), { type: 'base64' })
-          const wsname = wb.SheetNames[0];
-          const ws = wb.Sheets[wsname];
-          const data = XLSX.utils.sheet_to_csv(ws);
-          result = convertToJson(data)
-        } catch (e) {
-          console.log("🚀 ~ file: PetaniScreen.tsx ~ line 48 ~ getFile ~ e", e)
-          alert("Error fetching database. Either the database is missing or format is not .xlsx")
+        if (permissions.granted) {
+
+          // Gets SAF URI from response
+          const uri = permissions.directoryUri;
+
+          // Gets all files inside of selected directory
+          const files = await FileSystem.StorageAccessFramework.readDirectoryAsync(uri);
+
+          try {
+            const file = await FileSystem.readAsStringAsync(files[0], { encoding: FileSystem.EncodingType.Base64 })
+            const wb = await XLSX.read(file.replace(/_/g, "/").replace(/-/g, "+"), { type: 'base64' })
+            const wsname = wb.SheetNames[0];
+            const ws = wb.Sheets[wsname];
+            const data = XLSX.utils.sheet_to_csv(ws);
+            setData(convertToJson(data))
+          } catch (e) {
+            alert("Error fetching database. Either the database is missing or format is not .xlsx")
+          }
         }
       }
-      setData(result)
-    }
-    getFile()
+    })()
+
     return () => { }
   }, [])
+
+  const clearAll = async () => {
+    try {
+      setData([])
+    } catch (e) {
+      // clear error
+    }
+
+    console.log('Done.')
+  }
 
   const renderQueryResult = () => {
     const result = data.filter((el: PetaniInterface) => el.KODE_PETANI == kodePetaniInputState.value.trim() && el.NP_KERANJANG === npKeranjangInputState.value && el)
 
     if (result.length === 1)
-      return result.map((el, i) =>
+      return result.map((el: PetaniInterface, i: React.Key | null | undefined) =>
         <React.Fragment key={i}>
           <CardCustom result={el} />
         </React.Fragment>
@@ -92,7 +103,7 @@ export default function PetaniScreen() {
             autoCapitalize={"characters"}
             ref={firstInput}
             onSubmitEditing={() => {
-              secondInput.current.focus()
+              secondInput?.current?.focus()
             }}
             {...kodePetaniInputState}
           />
@@ -104,11 +115,17 @@ export default function PetaniScreen() {
             keyboardType={Device.osName === "Android" ? "numeric" : "number-pad"}
             ref={secondInput}
             selectTextOnFocus={true}
+            onSubmitEditing={() => {
+              Keyboard.dismiss()
+            }}
             blurOnSubmit={false}
             {...npKeranjangInputState}
           />
         </View>
-        {renderQueryResult()}
+        <Button onPress={() => clearAll()}>
+          BUTTON
+        </Button>
+        {data ? renderQueryResult() : null}
       </Layout>
     </TouchableWithoutFeedback>
   )

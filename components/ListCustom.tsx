@@ -2,18 +2,15 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { List, ListItem, Icon, Divider } from '@ui-kitten/components';
 import { PetaniInterface } from '../interfaces/petani.interface'
-
-const data = new Array(8).fill({
-    title: 'Item',
-});
+import { Ionicons } from '@expo/vector-icons';
 
 type ListCustomProps = {
     result: PetaniInterface[];
 };
 
 export const ListCustom = ({ result }: ListCustomProps) => {
-    const renderItemIcon = (props: any) => (
-        <Icon {...props} name='person' />
+    const renderItemIcon = () => (
+        <Ionicons name="ios-trash-bin-sharp" size={24} style={{ marginTop: 4 }} color="black" />
     );
     const renderItem = ({ item }: { item: PetaniInterface }) => {
         return (
