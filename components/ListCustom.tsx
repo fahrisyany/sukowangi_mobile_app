@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { List, ListItem, Icon, Divider } from '@ui-kitten/components';
+import { List, ListItem, Divider } from '@ui-kitten/components';
 import { PetaniInterface } from '../interfaces/petani.interface'
 import { Ionicons } from '@expo/vector-icons';
 

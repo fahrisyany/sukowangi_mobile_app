@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function useAsyncStorage<T>(key: string, initialValue: T): [T, (value: any) => Promise<void>] {
@@ -17,7 +17,7 @@ function useAsyncStorage<T>(key: string, initialValue: T): [T, (value: any) => P
         }
     }
 
-    useLayoutEffect (() => {
+    useLayoutEffect(() => {
         getStoredItem();
     }, []);
 
