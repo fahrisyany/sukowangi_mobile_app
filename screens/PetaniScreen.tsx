@@ -28,7 +28,7 @@ export default function PetaniScreen() {
   useEffect(() => {
     (async () => {
       const item: string | null = await AsyncStorage.getItem('data');
-      if (item === '[]') {
+      if (!item) {
         // Gets all files inside of selected directory
         const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
@@ -53,19 +53,8 @@ export default function PetaniScreen() {
         }
       }
     })()
-
     return () => { }
   }, [])
-
-  const clearAll = async () => {
-    try {
-      setData([])
-    } catch (e) {
-      // clear error
-    }
-
-    console.log('Done.')
-  }
 
   const renderQueryResult = () => {
     const result = data.filter((el: PetaniInterface) => el.KODE_PETANI == kodePetaniInputState.value.trim() && el.NP_KERANJANG === npKeranjangInputState.value && el)
@@ -122,9 +111,6 @@ export default function PetaniScreen() {
             {...npKeranjangInputState}
           />
         </View>
-        <Button onPress={() => clearAll()}>
-          BUTTON
-        </Button>
         {data ? renderQueryResult() : null}
       </Layout>
     </TouchableWithoutFeedback>

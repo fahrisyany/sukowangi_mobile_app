@@ -8,12 +8,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
+import { ColorSchemeName } from 'react-native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
 import PetaniScreen from '../screens/PetaniScreen';
+import PengaturanScreen from '../screens/PengaturanScreen';
 import SeriScreen from '../screens/SeriScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
@@ -75,6 +76,14 @@ function BottomTabNavigator() {
         options={{
           title: 'Seri',
           tabBarIcon: ({ color }) => <TabBarIcon name="list-ul" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Pengaturan"
+        component={PengaturanScreen}
+        options={{
+          title: 'Pengaturan',
+          tabBarIcon: ({ color }) => <TabBarIcon name="gears" color={color} />,
         }}
       />
     </BottomTab.Navigator>
