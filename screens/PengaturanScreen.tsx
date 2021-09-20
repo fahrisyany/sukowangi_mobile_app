@@ -1,21 +1,25 @@
 import React from 'react';
-import { StyleSheet, View, BackHandler, Alert } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import { Button, Card, Layout, Text } from '@ui-kitten/components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDatabase } from '../contexts/database';
 
 const ClearDatabaseFooter = (props: any) => {
+    const { handleClearDatabase, handleCacheDatabase } = useDatabase();
 
     const clearAll = async () => {
         try {
-            Alert.alert('Database akan dihapus', 'Aplikasi akan tutup dan database bisa dipilih kembali', [
+            Alert.alert('Perhatian', 'Database yang di chache akan dihapus', [
                 {
                     text: 'Batal',
                     onPress: () => null,
                     style: 'cancel',
                 },
-                { text: 'Lanjut', onPress: () => { AsyncStorage.removeItem('data'); BackHandler.exitApp(); } },
+                {
+                    text: 'Lanjut', onPress: () => {
+                        handleClearDatabase(() => Alert.alert("Perhatian", "Database berhasil dihapus"))
+                    }
+                },
             ]);
-
         } catch (e) {
             console.log("🚀 ~ file: PengaturanScreen.tsx ~ line 14 ~ clearAll ~ e", e)
         }
@@ -25,9 +29,15 @@ const ClearDatabaseFooter = (props: any) => {
         <View {...props} style={[props.style, styles.footerContainer]}>
             <Button
                 style={styles.footerControl}
+                onPress={() => handleCacheDatabase(() => Alert.alert("Perhatian", "Database Tersimpan dengan baik"))}
+                size='small'>
+                PILIH
+            </Button>
+            <Button
+                style={styles.footerControl}
                 onPress={() => clearAll()}
                 size='small'>
-                KONFIRMASI
+                HAPUS CACHE
             </Button>
         </View>
     )
@@ -36,7 +46,7 @@ const ClearDatabaseFooter = (props: any) => {
 export const PengaturanScreen = () => (
     <Layout style={styles.container} level='1'>
         <Card style={styles.card} footer={ClearDatabaseFooter}>
-            <Text>Hapus Database yang tersimpan</Text>
+            <Text>Pilih Database yang akan di simpan</Text>
         </Card>
     </Layout>
 );

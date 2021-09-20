@@ -18,13 +18,15 @@ import PengaturanScreen from '../screens/PengaturanScreen';
 import SeriScreen from '../screens/SeriScreen';
 import { RootStackParamList, RootTabParamList } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
-
+import { ProvideDatabase } from '../contexts/database'
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
+      <ProvideDatabase>
+        <RootNavigator />
+      </ProvideDatabase>
     </NavigationContainer>
   );
 }

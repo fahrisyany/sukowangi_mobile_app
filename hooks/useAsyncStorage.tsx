@@ -8,6 +8,7 @@ function useAsyncStorage<T>(key: string, initialValue: T): [T, (value: any) => P
         try {
             // Get from local storage by key
             const item: string | null = await AsyncStorage.getItem(key);
+            
             // Parse stored json or if none return initialValue
             const value: T = item === '' ? [] : item ? JSON.parse(item) : ""
             setStoredValue(value);
